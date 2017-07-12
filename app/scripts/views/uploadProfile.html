@@ -1,0 +1,160 @@
+<div class="row">
+	<section class="progressSection" ng-if="loading">
+		<ul class="progress-container">
+			<li id="attachentsProgress" layout="row" layout-sm="column" layout-align="space-around">
+				<md-progress-circular class="md-hue-2" md-mode="indeterminate" md-diameter="30">
+				</md-progress-circular>
+			</li>
+		</ul>
+	</section>
+	<form name="resumeForm" class="form-inline" ng-submit="uploadFile(resumeForm)">
+		<ul class="radioButtonHolder" ng-init="resumeForm.resumeFileType = 'single'">
+			<li class="radioDisplay form-group col-lg-3 col-md-3 col-sm-4">
+				<input name="resumeRadio" id="singleRadio" type="radio" ng-model="resumeForm.resumeFileType" ng-click="checkSettings($event)" value="single">
+				<label for="singleRadio">{{i18n.SINGLE_RESUME}}</label>
+			</li>
+			<li class="radioDisplay form-group col-lg-3 col-md-3 col-sm-4">
+				<input name="resumeRadio" class="" id="multipleRadio" type="radio" ng-model="resumeForm.resumeFileType" ng-click="checkSettings($event)" value="multiple">
+				<label for="multipleRadio">{{i18n.MULTIPLE_RESUME}}</label>
+			</li>
+			<li class="radioDisplay form-group col-lg-3 col-md-3 col-sm-4">
+				<input name="resumeRadio" class="" id="excelRadio" type="radio" ng-model="resumeForm.resumeFileType" ng-click="checkSettings($event)" value="excel">
+				<label for="excelRadio">{{i18n.EXCEL_UPLOAD}}</label>
+			</li>
+		</ul>
+		<section ng-show="!isExcel" class="col-lg-8 col-sm-10 col-md-10">
+			<ul class="legendContainer">
+				<li class="col-lg-12 col-sm-12 col-md-12">
+					<legend>{{i18n.CANDIDATE_DETAILS_LEGEND}}</legend>
+				</li>
+			</ul>
+			<ul ng-show="!isMultiple" class="textFieldHolder">
+				<li class="form-group col-lg-9 col-md-9 col-sm-9">
+					<label for="resumeCandidateName" class="col-lg-4 col-md-5 col-sm-5">{{i18n.CANDIDATE_NAME}}</label>
+					<input id="resumeCandidateName" type="text" class="form-control col-lg-8 col-md-7 col-sm-7" placeholder="{{i18n.ENTER_NAME_PLACEHOLDER}}" ng-model="resumeForm.candidateName">
+				</li>
+			</ul>
+			<ul ng-show="!isMultiple" class="textFieldHolder">
+				<li class="form-group col-lg-9 col-md-9 col-sm-9">
+					<label for="resumeCandidateEmail" class="col-lg-4 col-md-5 col-sm-5">{{i18n.CANDIDATE_EMAIL_ID}}</label>
+					<input id="resumeCandidateEmail" type="text" placeholder="{{i18n.ENTER_EMAIL_PLACEHOLDER}}" class="form-control col-lg-8 col-md-7 col-sm-7" ng-model="resumeForm.candidateEmail">
+				</li>
+			</ul>
+			<ul ng-show="!isMultiple" class="textFieldHolder">
+				<li class="form-group col-lg-9 col-md-9 col-sm-9">
+					<label for="resumeCandidatePhone" class="col-lg-4 col-md-5 col-sm-5">{{i18n.CANDIDATE_PHONE_NUMBER}}</label>
+					<input id="resumeCandidatePhone" type="number" pattern="[0-9]*" placeholder="{{i18n.ENTER_PHONE_NUMBER_PLACEHOLDER}}" class="form-control col-lg-8 col-md-7 col-sm-7" ng-model="resumeForm.candidatePhoneNumber">
+				</li>
+			</ul>
+			<ul class="textFieldHolder">
+				<li class="form-group col-lg-9 col-md-9 col-sm-9">
+					<label for="resumeSourceType" class="col-lg-4 col-md-5 col-sm-5">{{i18n.SOURCE_TYPE}}<span class="textRed">*</span></label>
+					<select id="resumeSourceType" ng-model="resumeForm.sourceType" class="form-control col-lg-8 col-md-7 col-sm-7 sourceSelection spire-select" ng-required="isMandatory">
+							<option value="">Please select an option</option>
+							<option title = {{sourceType}} ng-repeat="sourceType in sourceTypes" value="{{sourceType}}">
+									{{sourceType}}
+							</option>
+					</select>
+				</li>
+			</ul>
+			<ul class="textFieldHolder">
+				<li class="form-group col-lg-9 col-md-9 col-sm-9">
+					<label for="resumeSourceName" class="col-lg-4 col-md-5 col-sm-5">{{i18n.SOURCE_NAME}}<span class="textRed">*</span></label>
+					<select id="resumeSourceName" ng-model="resumeForm.sourceName" class="form-control col-lg-8 col-md-7 col-sm-7 sourceSelection spire-select" ng-required="isMandatory">
+							<option value="">{{i18n.DEFAULT_OPTION}}</option>
+							<option title = {{sourceName}} ng-repeat="sourceName in sourceNames" value="{{sourceName}}">
+									{{sourceName}}
+							</option>
+					</select>
+				</li>
+			</ul>
+		</section>
+		<section class="col-lg-8 col-sm-10 col-md-10">
+			<ul class="legendContainer">
+				<li class="col-lg-12 col-sm-12 col-md-12">
+					<legend>{{i18n.RESUME_UPLOAD_LEGEND}}</legend>
+				</li>
+			</ul>
+			<ul class="fileUploadContainer">
+				<li class="input-group col-lg-6 col-md-6 col-sm-6">
+					<input type="text" id="spireFileUpload" class="form-control" ng-model="inputFileName" name="fileName" id="fileName" />
+					<div id="spireFileUpload" class="spire-file-upload input-group-addon spire-browse-field-div">
+						<span id="BrowseLabel">{{i18n.BROWSE}}</span>
+						<input class="spire-upload" ng-model="resumeForm.fileObj" type="file" nv-file-select uploader="uploader" />
+						<br/>
+					</div>
+				</li>
+				<li class="input-group col-lg-2 col-md-2 col-sm-2 fileDownloadLink" ng-hide = "true">
+					<a ng-click = "excelTemplateDownload()" title = "Download excel template">{{i18n.DOWNLOAD_TEMPLATE_TEXT}}<i class = "glyphicon glyphicon-save"></i></a>
+				</li>
+				<li class="col-lg-6 col-md-6 col-sm-6 supportedFiles">
+					<p id="candidateSupportedTypeLabels" class="spire-content-3" ng-class="{'text-danger': invalidFile}" ng-show="!isExcel && !isMultiple">
+						{{i18n.SUPPORTED_SINGLE_FILE_TYPES}}
+					</p>
+					<p id="candidateSupportedTypeLabels" class="spire-content-3" ng-class="{'text-danger': invalidFile}" ng-show="isMultiple">
+						{{i18n.SUPPORTED_MULTIPLE_FILE_TYPES}}
+					</p>
+					<p id="candidateSupportedTypeLabels" class="spire-content-3" ng-class="{'text-danger': invalidFile}" ng-show="isExcel">
+						{{i18n.SUPPORTED_EXCEL_FILE_TYPES}}
+					</p>
+				</li>
+				<li class="col-lg-6 col-md-6 col-sm-6">
+					<div class="col-sm-offset-1">
+						<span class="errorMsg" ng-show="unsupportedFileType">{{ i18n.ATTACHMENT_UPLOAD_FILE_TYPE }}</span>
+						<span class="errorMsg" ng-show="unsupportedFileNameLength">{{ i18n.FILE_NAME_LENGTH }}</span>
+						<span class="errorMsg" ng-show="unsupportedFileName">{{ i18n.SPECIAL_CHARACTER }}</span>
+						<span class="errorMsg" ng-show="unsupportedFileSize">{{ i18n.UPLOAD_FILE_SIZE }}</span>
+					</div><br/>
+				</li>
+			</ul>
+		</section>
+		<section class="col-lg-8 col-sm-10 col-md-10">
+			<ul class="legendContainer">
+				<li class="col-lg-12 col-sm-12 col-md-12">
+					<legend></legend>
+				</li>
+			</ul>
+			<ul class="buttonContainer">
+				<li class="col-lg-12 col-sm-12 col-md-12">
+					<button type="submit" class="btn btn-sm btn-primary" name="submitButton" ng-disabled="item.isReady || item.isUploading || item.isSuccess">{{i18n.SUBMIT}}</button>
+					<button class="btn btn-sm btn-default" name="cancelButton" ng-click="clearForm(resumeForm)">{{i18n.CANCEL}}</button>
+				</li>
+			</ul>
+		</section>
+	</form>
+	<section class="col-lg-8 col-sm-10 col-md-10 tableSection" ng-show="resumeUploaded">
+		<ul class="legendContainer">
+			<li class="col-lg-12 col-sm-12 col-md-12">
+				<legend>CANDIDATE DETAILS</legend>
+			</li>
+		</ul>
+		<ul class="candidateTableContainer">
+			<li class="tableHolder table-layout">
+				<table class="table table-bordered table-striped candidateTable table-hover">
+					<tr>
+						<th><a>CANDIDATE ID</a></th>
+						<th><a>CANDIDATE NAME</a></th>
+						<th><a>CANDIDATE PHONE NUMBER</a></th>
+						<th><a>ACTIONS</a></th>
+					</tr>
+					<tr ng-repeat="candidate in candidatesList track by $index">
+						<td><a class = "clickable" ng-click="openProfileDetail(candidate.candidateId)">{{candidate.displayId}}</a></td>
+						<td><a class = "clickable" ng-click="openProfileDetail(candidate.candidateId)">{{candidate.candidateName}}</a></td>
+						<td><a>{{candidate.phoneNumber}}</a></td>
+						<td>
+							<tag-overlay id="HEmailTag" class="icons-float" candidate-id="candidate.candidateId" analytics-on="click" analytics-event="Home -- open label popover">
+							</tag-overlay>
+							<campaign-overlay-new id="candRichDD" class="icons-float campaign-overlay" title="{{i18n.CAMPAIGNS_OVERLAY_BULK_TITLE}}" height="150px" candidate-id="candidate.candidateId" candidates="candidate" prepopulate="true" analytics-on="click" analytics-event="Home--open campaign popover"
+							    ng-show="config.mautic==false">
+							</campaign-overlay-new>
+							<div id="HEmailIconA" class="crm-overlay btn-group icons-float" title="{{(candidate.emailId !=null && candidate.emailId !='null')?candidate.emailId : i18n.NO_EMAIL_ADDRESS}}" analytics-on="click" analytics-event="Home -- open email modal window">
+								<span id="HEmailIconSpn" name="candidate.candidateName" candidate-id="candidate.candidateId" to="candidate.emailId" send-email ng-show="config.mautic"></span>
+								<span spire-send-email candidate="candidate" ng-show="!config.mautic"></span>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</li>
+		</ul>
+	</section>
+</div>
